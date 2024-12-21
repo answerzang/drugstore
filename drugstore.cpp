@@ -5,30 +5,30 @@ using namespace std;
 
 double change[] = { -1.5,-1,-0.5,0,2,4,6 };
 double teProfit = 0, myProfit = -1111, midProfit = -1111, midProfit1,midProfit2;
-//µÚ0ÌìÍíÉÏ°ÑËùÓĞ²»»áÂô³öÈ¥µÄÒ©Æ·¶¼¶ªµô
+//ç¬¬0å¤©æ™šä¸ŠæŠŠæ‰€æœ‰ä¸ä¼šå–å‡ºå»çš„è¯å“éƒ½ä¸¢æ‰
 
-bool read(int argc, char** argv);//¶ÁÎÄ¼ş
-void print(char** argv);	//Ğ´ÎÄ¼ş
-void getProfit();			//¼ÆËã½Ì¸¨ÊÕÒæ
-void greedy();				//Ì°ĞÄÉú³É³õÊ¼½â
+bool read(int argc, char** argv);//è¯»æ–‡ä»¶
+void print(char** argv);	//å†™æ–‡ä»¶
+void getProfit();			//è®¡ç®—æ•™è¾…æ”¶ç›Š
+void greedy();				//è´ªå¿ƒç”Ÿæˆåˆå§‹è§£
 double frand() { return 1.0 * rand() / RAND_MAX; }
-void SA();					//ÍË»ğ
-void adjust();				//µ÷ÕûÍË»ğ½â
-void calculate();			//¼ÆËãÀûÈó
+void SA();					//é€€ç«
+void adjust();				//è°ƒæ•´é€€ç«è§£
+void calculate();			//è®¡ç®—åˆ©æ¶¦
 
-int strategy[10][10][2], mystrategy[10][10][2], midstrategy[10][10][2], midstrategy1[10][10][2],midstrategy2[10][10][2];//Ì°ĞÄ¹ı³ÌÖĞ¼ä²ßÂÔ
-int haveSold[10][3], midHaveSold[10][3], midHaveSold1[10][3];//¼ÇÂ¼ÅÅĞòºóµÄ±àºÅ,¶ø²»ÊÇ³õÊ¼±àºÅ
+int strategy[10][10][2], mystrategy[10][10][2], midstrategy[10][10][2], midstrategy1[10][10][2],midstrategy2[10][10][2];//è´ªå¿ƒè¿‡ç¨‹ä¸­é—´ç­–ç•¥
+int haveSold[10][3], midHaveSold[10][3], midHaveSold1[10][3];//è®°å½•æ’åºåçš„ç¼–å·,è€Œä¸æ˜¯åˆå§‹ç¼–å·
 void Init();
-int dele[50][2];		//É¾³ı0
-int indexs1[30], misindex1[50];		//ÖĞ¼ä¹ı³Ì
+int dele[50][2];		//åˆ é™¤0
+int indexs1[30], misindex1[50];		//ä¸­é—´è¿‡ç¨‹
 struct drug {
-	int day;				//±£ÖÊÆÚ
-	double value;			//½ø¼Û
-	double deltava;			//Ô­±¾¼ÇÂ¼Ò©Æ·¼Ó¼ÛÓÃ£¬µ«ÒòÎªÏúÊÛ²ßÂÔÊı×é¼ÇÂ¼¼Ó¼Û£¬»ù±¾Ã»ÓÃµ½
-	int in;					//ÊÇ·ñÔÚ²Ö¿â
-	int away;				//ÊÇ·ñÈÓµô
-	int sold;				//ÊÇ·ñÂô³ö
-	int id;					//Ò©Æ·±àºÅ£¬ÂôÒ©¹ı³Ì»áÓĞÅÅĞò£¬¸Ä±äÒ©Æ·Î»ÖÃ
+	int day;				//ä¿è´¨æœŸ
+	double value;			//è¿›ä»·
+	double deltava;			//åŸæœ¬è®°å½•è¯å“åŠ ä»·ç”¨ï¼Œä½†å› ä¸ºé”€å”®ç­–ç•¥æ•°ç»„è®°å½•åŠ ä»·ï¼ŒåŸºæœ¬æ²¡ç”¨åˆ°
+	int in;					//æ˜¯å¦åœ¨ä»“åº“
+	int away;				//æ˜¯å¦æ‰”æ‰
+	int sold;				//æ˜¯å¦å–å‡º
+	int id;					//è¯å“ç¼–å·ï¼Œå–è¯è¿‡ç¨‹ä¼šæœ‰æ’åºï¼Œæ”¹å˜è¯å“ä½ç½®
 } drugs[50];
 
 struct dNode {
@@ -130,7 +130,7 @@ void print(char** argv)
 	fclose(file2);
 
 	FILE* file3 = fopen(fileName3.c_str(), "w");
-	fprintf(file3, "½Ì¸¨:%g\nÎÒµÄ:%g\n", teProfit, myProfit);
+	fprintf(file3, "æ•™è¾…:%g\næˆ‘çš„:%g\n", teProfit, myProfit);
 	fclose(file3);
 
 	FILE* file4 = fopen(fileName4.c_str(), "w");
@@ -158,12 +158,12 @@ void getProfit() {
 			dele[i][j] = -1;
 		}
 	}
-	int indexx = 0;					//¼ÇÂ¼ÈÓµôÒ©Æ·µÄÊıÁ¿
+	int indexx = 0;					//è®°å½•æ‰”æ‰è¯å“çš„æ•°é‡
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 50; j++) {
 			drugs[j].in = 1;
 		}
-		for (int j = 0; j < 10; j++) {	//ÊäÈë²ßÂÔ
+		for (int j = 0; j < 10; j++) {	//è¾“å…¥ç­–ç•¥
 			if (strategy[i][j][0] != -1) {
 				D[j].value = drugs[strategy[i][j][0]].value + change[strategy[i][j][1]];
 				D[j].d = &drugs[strategy[i][j][0]];
@@ -173,7 +173,7 @@ void getProfit() {
 				D[j].value = 100;
 			}
 		}
-		//ÕÒÈı¸ö£¬ËãÖµ²¢´¦Àí£¬×îĞ¡ÇÒ±£ÖÊÆÚ×î³¤
+		//æ‰¾ä¸‰ä¸ªï¼Œç®—å€¼å¹¶å¤„ç†ï¼Œæœ€å°ä¸”ä¿è´¨æœŸæœ€é•¿
 		for (int j = 0; j < 9; j++) {
 			for (int k = j + 1; k < 10; k++) {
 				if (D[j].value > D[k].value) {
@@ -190,7 +190,7 @@ void getProfit() {
 				D[j].d->sold = 1;
 			}
 		}
-		//´¦Àí¶ªÆú
+		//å¤„ç†ä¸¢å¼ƒ
 		for (int j = 0; j < 50; j++) {
 			if (drugs[j].sold == 0 && drugs[j].day == i && drugs[j].away == 0) {//day==i
 				drugs[j].away = 1;
@@ -200,7 +200,7 @@ void getProfit() {
 			}
 		}
 
-		//²Ö¿â¹ÜÀí·Ñ£ºsold=0²¢ÇÒin=1²¢ÇÒaway=0
+		//ä»“åº“ç®¡ç†è´¹ï¼šsold=0å¹¶ä¸”in=1å¹¶ä¸”away=0
 		for (int j = 0; j < 50; j++) {
 			if (drugs[j].away == 0 && drugs[j].in == 1 && drugs[j].sold == 0) {
 				if (drugs[j].day - i <= 5)
@@ -221,9 +221,9 @@ void getProfit() {
 	}
 }
 
-void greedy() {//Îª·½±ã²éÕÒ£¬¼ÇÂ¼ÅÅĞòºóµÄÎ»ÖÃ£¬³õÊ¼Î»ÖÃÓĞid¼ÇÂ¼,Ö»ĞèÒªµÃ³öÒ»¸ö10¡Á3µÄÊı×é
+void greedy() {//ä¸ºæ–¹ä¾¿æŸ¥æ‰¾ï¼Œè®°å½•æ’åºåçš„ä½ç½®ï¼Œåˆå§‹ä½ç½®æœ‰idè®°å½•,åªéœ€è¦å¾—å‡ºä¸€ä¸ª10Ã—3çš„æ•°ç»„
 
-	for (int i = 0; i < 50; i++) {//²»ÈÓ
+	for (int i = 0; i < 50; i++) {//ä¸æ‰”
 		drugs[i].deltava = 6;
 	}
 
@@ -247,7 +247,7 @@ void greedy() {//Îª·½±ã²éÕÒ£¬¼ÇÂ¼ÅÅĞòºóµÄÎ»ÖÃ£¬³õÊ¼Î»ÖÃÓĞid¼ÇÂ¼,Ö»ĞèÒªµÃ³öÒ»¸ö10
 	for (int i = 0; i < 10; i++) {
 		int index[3] = { -1,-1,-1 };
 		int num = 0;
-		for (int j = 0; j < 50; j++) {//È·¶¨Ã¿ÌìÂôÄÄÈıÖÖ
+		for (int j = 0; j < 50; j++) {//ç¡®å®šæ¯å¤©å–å“ªä¸‰ç§
 			if (drugs[j].day - i - 1 >= 0 && drugs[j].sold == 0 && num<3) {
 				index[0] = index[1];
 				index[1] = index[2];
@@ -255,19 +255,19 @@ void greedy() {//Îª·½±ã²éÕÒ£¬¼ÇÂ¼ÅÅĞòºóµÄÎ»ÖÃ£¬³õÊ¼Î»ÖÃÓĞid¼ÇÂ¼,Ö»ĞèÒªµÃ³öÒ»¸ö10
 				num++;
 			}
 		}
-		//°ÑÕâÈıÖÖ±ê¼Ç³öÀ´,¼ÇÔÚindex[]ÖĞ
+		//æŠŠè¿™ä¸‰ç§æ ‡è®°å‡ºæ¥,è®°åœ¨index[]ä¸­
 		for (int j = 0; j < 3; j++) {
 			if (index[j] != -1) {
 				drugs[index[j]].sold = 1;
-				haveSold[i][j] = index[j];		//Ì°ĞÄ³õÊ¼»¯haveSoldÓëmidHaveSold
+				haveSold[i][j] = index[j];		//è´ªå¿ƒåˆå§‹åŒ–haveSoldä¸midHaveSold
 				midHaveSold[i][j] = index[j];
 			}
 		}
 	}
-	//±ê¼ÇĞèÒª¶ªµÄÒ©,´æÒÉ£¬µÚ10ÌìÍíÉÏ¹ıÆÚµÄ¶ª²»¶ª£¿Ôİ¶¨Îª¶ª
+	//æ ‡è®°éœ€è¦ä¸¢çš„è¯,å­˜ç–‘ï¼Œç¬¬10å¤©æ™šä¸Šè¿‡æœŸçš„ä¸¢ä¸ä¸¢ï¼Ÿæš‚å®šä¸ºä¸¢
 	for (int i = 0; i < 50; i++) {
 		if (drugs[i].day <= 10 && drugs[i].sold == 0) {
-			drugs[i].away = 1;					//drugs[i]½«»á±»¶ªÆú
+			drugs[i].away = 1;					//drugs[i]å°†ä¼šè¢«ä¸¢å¼ƒ
 			int indexx, indexy;
 			double minvalue = 31;
 			for (int j = 0; j < drugs[i].day; j++) {
@@ -279,7 +279,7 @@ void greedy() {//Îª·½±ã²éÕÒ£¬¼ÇÂ¼ÅÅĞòºóµÄÎ»ÖÃ£¬³õÊ¼Î»ÖÃÓĞid¼ÇÂ¼,Ö»ĞèÒªµÃ³öÒ»¸ö10
 					}
 				}
 			}
-			//±£Ö¤¶ªµÄÒ©Æ·×î±ãÒË
+			//ä¿è¯ä¸¢çš„è¯å“æœ€ä¾¿å®œ
 			if (drugs[i].away && minvalue < drugs[i].value) {
 				drugs[midHaveSold[indexx][indexy]].away = 1;
 				midHaveSold[indexx][indexy] = i;
@@ -292,7 +292,7 @@ void greedy() {//Îª·½±ã²éÕÒ£¬¼ÇÂ¼ÅÅĞòºóµÄÎ»ÖÃ£¬³õÊ¼Î»ÖÃÓĞid¼ÇÂ¼,Ö»ĞèÒªµÃ³öÒ»¸ö10
 	int num = 0;
 }
 
-void calculate() {/* ¸ù¾İmidHaveSoldÉú³É²ßÂÔmidstrategy,²¢¼ÆËãÀûÈómidProfit */
+void calculate() {/* æ ¹æ®midHaveSoldç”Ÿæˆç­–ç•¥midstrategy,å¹¶è®¡ç®—åˆ©æ¶¦midProfit */
 	midProfit = 0;
 	for (int i = 0; i < 50; i++) {
 		drugs[i].deltava = 6;
@@ -306,7 +306,7 @@ void calculate() {/* ¸ù¾İmidHaveSoldÉú³É²ßÂÔmidstrategy,²¢¼ÆËãÀûÈómidProfit */
 			midstrategy2[i][j][1] = 6;
 		}
 	}
-	for (int i = 0; i < 10; i++) {//ÅĞ¶ÏÊÇ·ñºÏ·¨
+	for (int i = 0; i < 10; i++) {//åˆ¤æ–­æ˜¯å¦åˆæ³•
 		for (int j = 0; j < 3; j++) {
 			if (midHaveSold[i][j] != -1)
 				drugs[midHaveSold[i][j]].sold = 1;
@@ -320,22 +320,22 @@ void calculate() {/* ¸ù¾İmidHaveSoldÉú³É²ßÂÔmidstrategy,²¢¼ÆËãÀûÈómidProfit */
 			misindex1[j] = -1;
 		}
 	}
-	for (int i = 0; i < 10; i++) {//Âô³öµÄÒ©Æ·
+	for (int i = 0; i < 10; i++) {//å–å‡ºçš„è¯å“
 		for (int j = 0; j < 3; j++) {
 			indexs1[i * 3 + j] = midHaveSold[i][j];
 		}
 	}
 
-	//Éú³ÉÃ¿ÌìµÄstrategy£¬Ò»ÌìÌì´¦Àí£¬Ã¿Ìì¶¼²ÉÓÃÀûÈó×î´óµÄ¼Ó¼Û²ßÂÔ
-	for (int i = 0; i < 10; i++) {//È±Ïİ£¬²»ÄÜ´¦ÀíÃ¿ÌìÄÜ°Ú·Åµ½Ò©¼ÜÉÏµÄÒ©Æ·ÊıÁ¿ÉÙÓÚ3ÖÖµÄÇé¿ö
+	//ç”Ÿæˆæ¯å¤©çš„strategyï¼Œä¸€å¤©å¤©å¤„ç†ï¼Œæ¯å¤©éƒ½é‡‡ç”¨åˆ©æ¶¦æœ€å¤§çš„åŠ ä»·ç­–ç•¥
+	for (int i = 0; i < 10; i++) {//ç¼ºé™·ï¼Œä¸èƒ½å¤„ç†æ¯å¤©èƒ½æ‘†æ”¾åˆ°è¯æ¶ä¸Šçš„è¯å“æ•°é‡å°‘äº3ç§çš„æƒ…å†µ
 		midstrategy2[i][0][0] = midHaveSold[i][0];
 		midstrategy2[i][1][0] = midHaveSold[i][1];
 		midstrategy2[i][2][0] = midHaveSold[i][2];
-		midProfit2 = 0;		//±éÀú¼Ó¼ÛÊ±µ±ÌìÀûÈóÖµ
-		double maxP = -100;	//¼ÇÂ¼µ±ÌìÀûÈó×î´óÖµ
-		int n = 0;	//¸¨Öú¹¹½¨midÊı×é
-		int mid[50];//¼ÇÂ¼µ±ÌìËùÓĞÃ»Âô³ö¶øÇÒÃ»¶ªµôµÄÒ©Æ·
-		int no = 0;	//¼ÇÂ¼µ±Ìì°ÚÔÚÒ©¼ÜÉÏµÄÒ©Æ·µÄÊıÁ¿
+		midProfit2 = 0;		//éå†åŠ ä»·æ—¶å½“å¤©åˆ©æ¶¦å€¼
+		double maxP = -100;	//è®°å½•å½“å¤©åˆ©æ¶¦æœ€å¤§å€¼
+		int n = 0;	//è¾…åŠ©æ„å»ºmidæ•°ç»„
+		int mid[50];//è®°å½•å½“å¤©æ‰€æœ‰æ²¡å–å‡ºè€Œä¸”æ²¡ä¸¢æ‰çš„è¯å“
+		int no = 0;	//è®°å½•å½“å¤©æ‘†åœ¨è¯æ¶ä¸Šçš„è¯å“çš„æ•°é‡
 		for (int j = 3 * (i + 1); j < 30; j++) {
 			if (indexs1[j] != -1)mid[n++] = indexs1[j];
 		}
@@ -345,7 +345,7 @@ void calculate() {/* ¸ù¾İmidHaveSoldÉú³É²ßÂÔmidstrategy,²¢¼ÆËãÀûÈómidProfit */
 			}
 		}
 
-		//°´¹ıÆÚÊ±¼äÅÅĞò,ÉıĞò£¬ÒÔ¹©Ñ¡Ôñ
+		//æŒ‰è¿‡æœŸæ—¶é—´æ’åº,å‡åºï¼Œä»¥ä¾›é€‰æ‹©
 		for (int j = 0; j < n - 1; j++) {
 			for (int k = j + 1; k < n; k++) {
 				if (drugs[mid[j]].day > drugs[mid[k]].day) {
@@ -356,9 +356,9 @@ void calculate() {/* ¸ù¾İmidHaveSoldÉú³É²ßÂÔmidstrategy,²¢¼ÆËãÀûÈómidProfit */
 
 		for (int d1 = 6; d1 > 0 && no < 8; d1--) {
 			/*
-			no¼ÇÂ¼ÁËµ±Ìì·Åµ½Ò©¼ÜÉÏµÄÒ©Æ·Êı£¬µ±Ä³ÖÖÒªÂô³öµÄÒ©Æ·¼Ó¼Û´Ó6½µÎª4Ê±£¬ÀûÈó-2£¬
-			Ö»ÓĞ¼õÉÙµÄ²Ö¿â¹ÜÀí·Ñ¶àÓÚ2Ê±£¬ÀûÈó²Å»á¸ü¸ß£¬ËùÒÔÖÁÉÙĞèÒªÈıÖÖÒ©Æ·ĞÂÉÏ¼Ü£¬
-			Ò²¾ÍÊÇÖ®Ç°Ò©¼ÜÉÏµÄÒ©Æ·Êı×î¶àÎª7
+			noè®°å½•äº†å½“å¤©æ”¾åˆ°è¯æ¶ä¸Šçš„è¯å“æ•°ï¼Œå½“æŸç§è¦å–å‡ºçš„è¯å“åŠ ä»·ä»6é™ä¸º4æ—¶ï¼Œåˆ©æ¶¦-2ï¼Œ
+			åªæœ‰å‡å°‘çš„ä»“åº“ç®¡ç†è´¹å¤šäº2æ—¶ï¼Œåˆ©æ¶¦æ‰ä¼šæ›´é«˜ï¼Œæ‰€ä»¥è‡³å°‘éœ€è¦ä¸‰ç§è¯å“æ–°ä¸Šæ¶ï¼Œ
+			ä¹Ÿå°±æ˜¯ä¹‹å‰è¯æ¶ä¸Šçš„è¯å“æ•°æœ€å¤šä¸º7
 			*/
 			for (int d2 = 6; d2 > 0 && no < 8; d2--) {
 				for (int d3 = 6; d3 > 0 && no < 8; d3--) {
@@ -379,7 +379,7 @@ void calculate() {/* ¸ù¾İmidHaveSoldÉú³É²ßÂÔmidstrategy,²¢¼ÆËãÀûÈómidProfit */
 					}
 					no = 3;
 					for (int j = 0; j < n; j++) {
-						if (mid[j] != -1 && no<10 && (drugs[mid[j]].value + 6)>maxD) {//È±Ïİ
+						if (mid[j] != -1 && no<10 && (drugs[mid[j]].value + 6)>maxD) {//ç¼ºé™·
 							midstrategy2[i][no][0] = mid[j];
 							midstrategy2[i][no][1] = 6;
 							no++;
@@ -392,14 +392,14 @@ void calculate() {/* ¸ù¾İmidHaveSoldÉú³É²ßÂÔmidstrategy,²¢¼ÆËãÀûÈómidProfit */
 					}
 					for (int j = 0; j < n; j++) {
 						if (drugs[mid[j]].in == 1 && drugs[mid[j]].day - i <= 5) {
-							midProfit2 -= 1;//²Ö¿â¹ÜÀí·Ñ
+							midProfit2 -= 1;//ä»“åº“ç®¡ç†è´¹
 						}
 						else if (drugs[mid[j]].in == 1 && drugs[mid[j]].day - i > 5) {
 							midProfit2 -= 0.5;
 						}
 					}
 					if (midProfit2 >= maxP) {
-						maxP = midProfit2;//¸üĞÂÖĞ¼äÏúÊÛ²ßÂÔÊı×é
+						maxP = midProfit2;//æ›´æ–°ä¸­é—´é”€å”®ç­–ç•¥æ•°ç»„
 						for (int nn = 0; nn < 10; nn++) {
 							midstrategy[i][nn][0] = midstrategy2[i][nn][0];
 							midstrategy[i][nn][1] = midstrategy2[i][nn][1];
@@ -416,17 +416,17 @@ void adjust() {
 	for (int i = 0; i <= rand() % 5; i++) {
 		while (1) {
 			int opt = rand() % 4;
-			if (opt == 0) {//Âô³öµÄÒ©Æ·ÓëÎ´Âô³öÇÒÎ´¶ªÆúµÄÒ©Æ·½»»»
+			if (opt == 0) {//å–å‡ºçš„è¯å“ä¸æœªå–å‡ºä¸”æœªä¸¢å¼ƒçš„è¯å“äº¤æ¢
 				int x = rand() % 10, y = rand() % 3, z = rand() % 50;
 				if (drugs[misindex1[z]].away == 0 && drugs[midHaveSold[x][y]].day >= 10 && drugs[misindex1[z]].day > x) {
 					swap(midHaveSold[x][y], misindex1[z]);
 					break;
 				}
 			}
-			else {//Âô³öµÄÒ©Æ·Ïà»¥½»»»
+			else {//å–å‡ºçš„è¯å“ç›¸äº’äº¤æ¢
 				int x = rand() % 10, y = rand() % 3;
 				int u = rand() % 10, v = rand() % 3;
-				if (drugs[midHaveSold[x][y]].day > u && drugs[midHaveSold[u][v]].day > x) {//Ã»¹ıÆÚ
+				if (drugs[midHaveSold[x][y]].day > u && drugs[midHaveSold[u][v]].day > x) {//æ²¡è¿‡æœŸ
 					swap(midHaveSold[x][y], midHaveSold[u][v]);
 					break;
 				}
@@ -456,13 +456,13 @@ void SA() {
 				memcpy(haveSold, midHaveSold, sizeof(midHaveSold));
 			}
 		}
-		else {//ÍË»ØmidHaveSoldµÄĞŞ¸Ä
+		else {//é€€å›midHaveSoldçš„ä¿®æ”¹
 			memcpy(midHaveSold, midHaveSold1, sizeof(midHaveSold1));
 		}
-		T *= 0.99999;//³ıµÚ6×éÊı¾İÍâ0.999¹»ÁË£¬µÚ6×é0.9999
+		T *= 0.99999;//é™¤ç¬¬7ç»„æ•°æ®å¤–0.9999å¤Ÿäº†ï¼Œç¬¬7ç»„0.99999
 	}
 	for (double i = 1; i <= 5000; i++) {
-		/*ÅÀÉ½£¬Êµ¼ÊÉÏ²»ÅÀÉ½ÀûÈóÒ²²»»á¸Ä±ä£¬¿ÉÄÜÊÇÍË»ğ´ÎÊı×ã¹»,ÊÇÀûÈó´ïµ½ÁË×îÓÅ½â*/
+		/*çˆ¬å±±ï¼Œå®é™…ä¸Šä¸çˆ¬å±±åˆ©æ¶¦ä¹Ÿä¸ä¼šæ”¹å˜ï¼Œå¯èƒ½æ˜¯é€€ç«æ¬¡æ•°è¶³å¤Ÿ,åˆ©æ¶¦è¾¾åˆ°äº†æœ€ä¼˜è§£*/
 		adjust();
 		calculate();
 		if (midProfit > myProfit) {
@@ -471,7 +471,7 @@ void SA() {
 			memcpy(haveSold, midHaveSold, sizeof(midHaveSold));
 		}
 	}
-	////´òÓ¡²ßÂÔ
+	////æ‰“å°ç­–ç•¥
 	//cout << endl;
 	//for (int i = 0; i < 10; i++) {
 	//	for (int j = 0; j < 10; j++) {
