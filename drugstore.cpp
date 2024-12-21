@@ -233,7 +233,7 @@ void greedy() {//为方便查找，记录排序后的位置，初始位置有id记录,只需要得出一个10
 			if (drugs[j].day < drugs[i].day) {
 				swap(drugs[i], drugs[j]);
 			}
-			else if (drugs[j].day == drugs[i].day && drugs[j].value > drugs[i].value) {
+			else if (drugs[j].day == drugs[i].day && drugs[j].value < drugs[i].value) {
 				swap(drugs[i], drugs[j]);
 			}
 		}
@@ -268,22 +268,25 @@ void greedy() {//为方便查找，记录排序后的位置，初始位置有id记录,只需要得出一个10
 	for (int i = 0; i < 50; i++) {
 		if (drugs[i].day <= 10 && drugs[i].sold == 0) {
 			drugs[i].away = 1;					//drugs[i]将会被丢弃
-			/* 
-			实际上并不很严谨，因为这只会向前找卖出的药品里价格更小的，而不是最小的，但是因为数据本身丢弃很少，而且
-			drugs[i]的价格是所有与其过期时间相同的药品里最小的（足够小），所以有很大概率丢弃最小的，
-			这里可以在前面设置一个循环，遍历haveSold（保质期符合要求），找到价格最小的，然后与drugs[i]的价格比较
-			对于我的数据来说，丢弃的就是价格最小的，所以没有修改
-			*/
-			for (int j = 0; j < 10; j++) {
+			int indexx, indexy;
+			double minvalue = 31;
+			for (int j = 0; j < drugs[i].day; j++) {
 				for (int k = 0; k < 3; k++) {
-					if (drugs[i].away && drugs[midHaveSold[j][k]].day <= drugs[i].day && drugs[midHaveSold[j][k]].value < drugs[i].value) {
-						drugs[midHaveSold[j][k]].away = 1;
-						midHaveSold[j][k] = i;
-						haveSold[j][k] = i;
-						drugs[i].away = 0;
+					if (drugs[midHaveSold[j][k]].value < minvalue) {
+						indexx = j;
+						indexy = k;
+						minvalue = drugs[midHaveSold[j][k]].value;
 					}
 				}
 			}
+			//保证丢的药品最便宜
+			if (drugs[i].away && minvalue < drugs[i].value) {
+				drugs[midHaveSold[indexx][indexy]].away = 1;
+				midHaveSold[indexx][indexy] = i;
+				haveSold[indexx][indexy] = i;
+				drugs[i].away = 0;
+			}
+			
 		}
 	}
 	int num = 0;
@@ -433,7 +436,7 @@ void adjust() {
 }
 
 void SA() {
-	double T = 10000;
+	double T = 100000;
 	calculate();
 	myProfit = midProfit;
 	midProfit1 = midProfit;
@@ -456,7 +459,7 @@ void SA() {
 		else {//退回midHaveSold的修改
 			memcpy(midHaveSold, midHaveSold1, sizeof(midHaveSold1));
 		}
-		T *= 0.999;//除第6组数据外0.999够了，第6组0.9999
+		T *= 0.9999;//除第6组数据外0.999够了，第6组0.9999
 	}
 	for (double i = 1; i <= 5000; i++) {
 		/*爬山，实际上不爬山利润也不会改变，可能是退火次数足够,是利润达到了最优解*/
@@ -468,6 +471,7 @@ void SA() {
 			memcpy(haveSold, midHaveSold, sizeof(midHaveSold));
 		}
 	}
+	////打印策略
 	//cout << endl;
 	//for (int i = 0; i < 10; i++) {
 	//	for (int j = 0; j < 10; j++) {
