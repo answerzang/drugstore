@@ -459,7 +459,7 @@ void SA() {
 		else {//退回midHaveSold的修改
 			memcpy(midHaveSold, midHaveSold1, sizeof(midHaveSold1));
 		}
-		T *= 0.9999;//除第6组数据外0.999够了，第6组0.9999
+		T *= 0.99999;//除第6组数据外0.999够了，第6组0.9999
 	}
 	for (double i = 1; i <= 5000; i++) {
 		/*爬山，实际上不爬山利润也不会改变，可能是退火次数足够,是利润达到了最优解*/
